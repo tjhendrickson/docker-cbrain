@@ -1,8 +1,7 @@
 #!/bin/bash
 
 function die {
-    printf $*
-    echo
+    echo $*
     exit 1
 }
 
@@ -26,15 +25,7 @@ then
 fi
 PORT=3306
 
-echo -n "waiting for TCP connection to ${HOST}:${PORT}..."
-
-while ! nc -w 1 ${HOST} ${PORT} 2>/dev/null
-do
-  echo -n .
-  sleep 1
-done
-
-echo 'ok'
+dockerize -wait tcp://${HOST}:${PORT} -timeout 30s || die "Cannot wait for ${HOST}:${PORT} to be up or timeout was reached"
 
 case ${COMMAND} in
     config )
