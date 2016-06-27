@@ -4,6 +4,9 @@ FROM centos:6
 # Package updates and installations #
 #####################################
 
+# Note: keep the package list alphabetically
+#       ordered to facilitate parsing
+
 RUN yum update -y  && \
     yum install -y \
       autoconf \
@@ -33,6 +36,10 @@ RUN yum update -y  && \
 # Dockerize installation #
 ##########################
 
+# Dockerize is used in run.sh to edit template configuration files and
+# to wait for the DB to be started before starting the portal or
+# bourreau
+
 ENV DOCKERIZE_VERSION v0.2.0
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
     tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz 
@@ -52,6 +59,30 @@ RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A170311380
     /bin/bash -c "source $HOME/.rvm/scripts/rvm; rvm install $RUBY_VERSION; rvm --default $RUBY_VERSION" && \
     gem install bundler
 
+################################
+# Rails application bundling   #
+################################
+
+# Note: bundling should be done before the CBRAIN code is copied,
+#       so that bundling is not redone everytime the code is updated.
+
+# Copy Gemfiles
+RUN mkdir -p ${HOME}/cbrain/{BrainPortal,Bourreau}
+COPY ./BrainPortal/Gemfile /home/cbrain/cbrain/BrainPortal
+COPY ./Bourreau/Gemfile    /home/cbrain/cbrain/Bourreau
+
+# Bundle portal
+RUN cd ${HOME}/cbrain/BrainPortal              && \
+    bundle install                             && \
+    cd `bundle show sys-proctable`             && \
+    rake install
+
+# Bundle Bourreau
+RUN cd ${HOME}/cbrain/Bourreau       && \
+    bundle install && \
+    cd `bundle show sys-proctable` && \
+    rake install
+
 ####################
 # CBRAIN code copy #
 ####################
@@ -59,34 +90,45 @@ RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A170311380
 COPY . /home/cbrain/cbrain
 USER root
 RUN chown cbrain:cbrain -R /home/cbrain/cbrain
-USER cbrain
-
-################################
-# Rails application bundling   #
-################################
-
-RUN cd ${HOME}/cbrain/BrainPortal              && \
-    bundle install                             && \
-    cd `bundle show sys-proctable`             && \
-    rake install
-
-RUN cd ${HOME}/cbrain/Bourreau       && \
-    bundle install && \
-    cd `bundle show sys-proctable` && \
-    rake install
 
 #########################
-# Plugin installation   #
+# Ports and entry point #
 #########################
 
-RUN cd ${HOME}/cbrain/BrainPortal    && \
-    rake cbrain:plugins:install:all
-
-RUN cd ${HOME}/cbrain/Bourreau    && \
-    rake cbrain:plugins:install:plugins
-    
 EXPOSE 3000
 
 ENTRYPOINT ["/home/cbrain/cbrain/Docker/run.sh"]
-CMD ["portal","development","3000"]
-VOLUME /cbrain_data_cache /cbrain_task_dirs
+CMD ["portal","development","3000","1000","1000"]
+
+###########
+# Volumes #
+###########
+
+## Used by Portal and Bourreau ##
+#
+# /cbrain_data_cache: used by portal *and* bourreau to store
+#                     files and an id used for authentication.
+#                     Shouldn't be deleted manually.
+#
+# /home/cbrain/plugins: plugins to add to the cbrain installation.
+#                       Will be installed when the portal or
+#                       bourreau starts.
+
+## Used by Portal only ##
+#
+# /home/cbrain/.ssh:  public and private key created by the
+#                     portal to connect to
+#                     the Bourreaux and data providers.
+#
+# /home/cbrain/data_provider: a local data provider.
+ 
+## Used by Bourreau only ##
+#
+# /cbrain_task_dirs:  stores task execution directories.
+
+
+VOLUME /home/cbrain/cbrain_data_cache \
+       /home/cbrain/cbrain_task_dirs  \
+       /home/cbrain/.ssh  \
+       /home/cbrain/plugins \
+       /home/cbrain/data_provider
