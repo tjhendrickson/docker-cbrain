@@ -2,14 +2,14 @@ version: '2'
 services:
   cbrain_portal:
     image: mcin/cbrain:dev
-    command: portal ${MODE} ${PORT} ${USERID} ${GROUPID}
+    command: ${MODE} ${PORTAL_PORT} ${USERID} ${GROUPID}
     volumes:
      - ./volumes/portal_data_cache:/home/cbrain/cbrain_data_cache
      - ./volumes/.ssh:/home/cbrain/.ssh
      - ./volumes/plugins:/home/cbrain/plugins
      - ./volumes/data_provider:/home/cbrain/data_provider
     ports:
-     - "${PORT}:${PORT}"
+     - "${PORTAL_PORT}:${PORTAL_PORT}"
     depends_on:
      - mysql
     environment:
