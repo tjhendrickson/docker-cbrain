@@ -2,7 +2,7 @@
 
 * To build the container:
 ```
-docker build -f Docker/Dockerfile
+docker build -f Docker/Dockerfile .
 ```
 
 * To run a CBRAIN portal on local port 3000 using the container:
