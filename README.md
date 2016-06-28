@@ -2,7 +2,6 @@
 
 * To build the container:
 ```
-cd BrainPortal
 docker build -f Docker/Dockerfile
 ```
 
