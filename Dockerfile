@@ -50,10 +50,11 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 USER cbrain
 
 ENV RUBY_VERSION=2.2.0
-ENV PATH=$PATH:/home/cbrain/.rvm/rubies/ruby-${RUBY_VERSION}/bin      
 
-RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 && \
-    cd $HOME && \
+RUN cd $HOME && \
+    curl -sSL https://rvm.io/mpapis.asc | gpg2 --import - && \
     curl -sSL https://get.rvm.io | bash -s stable && \
-    /bin/bash -c "source $HOME/.rvm/scripts/rvm; rvm install $RUBY_VERSION; rvm --default $RUBY_VERSION" && \
+    source ${HOME}/.profile && \
+    rvm install $RUBY_VERSION && \
+    rvm --default $RUBY_VERSION && \
     gem install bundler
