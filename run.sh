@@ -81,30 +81,22 @@ function initialize {
 # Main script #
 ###############
 
-if [ $# != 4 ]
+if [ -z "$MODE" ] || [ -z "$PORT" ] || [ -z "$USERID" ] || [ -z "$GROUPID" ]
 then
-    echo "usage: run.sh MODE PORT USERID GROUPID"
+    echo "usage: run.sh with the following environment variables"
     echo
-    echo "Modes:"
+    echo "MODE:"
     echo "     development: starts the application in Rails development mode."
     echo "     test:        starts the application in Rails test mode."
-    echo "     production: starts the application in Rails production mode."
+    echo "     production:  starts the application in Rails production mode."
     echo 
-    echo "Port: port on which the Portal will listen."
+    echo "PORT: port on which the Portal will listen."
     echo
-    echo "User Id: ID of the user that will run the CBRAIN portal."
+    echo "USERID: ID of the user that will run the CBRAIN portal."
     echo
-    echo "Group Id: group ID of the user that will run the CBRAIN portal."
+    echo "GROUPID: group ID of the user that will run the CBRAIN portal."
     exit 1
 fi
-
-# Arguments parsing
-MODE=$1
-PORT=$2
-USERID=$3
-GROUPID=$4
-
-echo "User id is ${UID}"
 
 if [ $UID -eq 0 ]
 then

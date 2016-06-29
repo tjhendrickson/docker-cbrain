@@ -90,7 +90,7 @@ RUN chown cbrain:cbrain -R /home/cbrain/cbrain
 EXPOSE 3000
 
 ENTRYPOINT ["/home/cbrain/cbrain/Docker/run.sh"]
-CMD ["development","3000","1000","1000"]
+CMD []
 
 ###########
 # Volumes #
