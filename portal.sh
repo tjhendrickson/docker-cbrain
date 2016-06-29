@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 
 #####################
@@ -27,15 +27,6 @@ function install_plugins_portal {
     bundle install                                           || die "Cannot bundle install"
     rake cbrain:plugins:install:all                          || die "Cannot install plugins"
 }
-
-# Installs the plugins in the Bourreau.
-function install_plugins_bourreau { 
-    cd ${HOME}/cbrain/Bourreau          || die "Cannot cd to \
-                                           Bourreau directory"
-    bundle install                      || die "Cannot bundle install"
-    rake cbrain:plugins:install:plugins || die "Cannot install plugins"
-}
-
 
 function update_dp_cache_dir {
     mysql ${MYSQL_DATABASE} ${MYSQL_OPTIONS} -e "update remote_resources set dp_cache_dir='/home/cbrain/cbrain_data_cache'"    
@@ -81,17 +72,15 @@ function initialize {
 # Main script #
 ###############
 
-if [ -z "$MODE" ] || [ -z "$PORT" ] || [ -z "$USERID" ] || [ -z "$GROUPID" ]
+if [ -z "$MODE" ] || [ -z "$USERID" ] || [ -z "$GROUPID" ]
 then
-    echo "usage: run.sh with the following environment variables"
+    echo "usage: portal.sh with the following environment variables"
     echo
     echo "MODE:"
     echo "     development: starts the application in Rails development mode."
     echo "     test:        starts the application in Rails test mode."
     echo "     production:  starts the application in Rails production mode."
     echo 
-    echo "PORT: port on which the Portal will listen."
-    echo
     echo "USERID: ID of the user that will run the CBRAIN portal."
     echo
     echo "GROUPID: group ID of the user that will run the CBRAIN portal."
@@ -102,10 +91,13 @@ if [ $UID -eq 0 ]
 then
     groupmod -g ${GROUPID} cbrain || die "groupmod -g ${GROUPID} cbrain failed"
     usermod -u ${USERID} cbrain  || die "usermod -u ${USERID} cbrain" # the files in /home/cbrain are updated automatically
-    for volume in /home/cbrain/cbrain_data_cache \
+    VOLUMES="/home/cbrain/cbrain_data_cache \
                       /home/cbrain/.ssh \
                       /home/cbrain/plugins \
-                      /home/cbrain/data_provider
+                      /home/cbrain/data_provider"
+    # This folder may not be always mounted
+    [ -d /home/cbrain/.bourreau_ssh ] && VOLUMES="$VOLUMES /home/cbrain/.bourreau_ssh"
+    for volume in $VOLUMES
     do
         echo "chowning ${volume}"
         chown cbrain:cbrain ${volume}
@@ -137,8 +129,15 @@ dockerize -wait tcp://${MYSQL_HOST}:${MYSQL_PORT} -timeout 90s || die "Cannot wa
 # Initializes the DB if it was not done before
 check_initialized || initialize
 
+# Automatic exchange of SSH keys
+if [ -d /home/cbrain/.bourreau_ssh ]
+then
+  cat /home/cbrain/.ssh/id_cbrain_portal.pub > /home/cbrain/.bourreau_ssh/authorized_keys
+  chmod 600 /home/cbrain/.bourreau_ssh/authorized_keys
+fi
+
 echo "Starting portal"
 rm -f /home/cbrain/cbrain/BrainPortal/tmp/pids/*.pid
 install_plugins_portal 
 cd $HOME/cbrain/BrainPortal             || die "Cannot cd to BrainPortal directory"
-rails server thin -e ${MODE} -p ${PORT} || die "Cannot start BrainPortal"
+exec rails server thin -e ${MODE} -p 3000    || die "Cannot start BrainPortal"
