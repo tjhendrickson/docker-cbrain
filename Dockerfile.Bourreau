@@ -26,7 +26,8 @@ COPY ./Bourreau/Gemfile /home/cbrain/cbrain/Bourreau/
 RUN cd ${HOME}/cbrain/Bourreau                 && \
     bundle install                             && \
     cd `bundle show sys-proctable`             && \
-    rake install
+    rake install                               && \
+    echo -e '[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*\n' >> /home/cbrain/.bashrc
 
 ####################
 # CBRAIN code copy #
