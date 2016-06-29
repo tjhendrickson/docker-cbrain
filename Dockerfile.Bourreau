@@ -43,7 +43,7 @@ RUN chown cbrain:cbrain -R /home/cbrain/cbrain
 
 EXPOSE 22
 
-ENTRYPOINT ["/home/cbrain/cbrain/Docker/bourreau.sh"]
+ENTRYPOINT ["/home/cbrain/cbrain/Docker/bourreau_bootstrap.sh"]
 CMD []
 
 ###########

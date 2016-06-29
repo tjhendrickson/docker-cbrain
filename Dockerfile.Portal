@@ -33,7 +33,7 @@ RUN chown cbrain:cbrain -R /home/cbrain/cbrain
 
 EXPOSE 3000
 
-ENTRYPOINT ["/home/cbrain/cbrain/Docker/portal.sh"]
+ENTRYPOINT ["/home/cbrain/cbrain/Docker/portal_bootstrap.sh"]
 CMD []
 
 ###########
