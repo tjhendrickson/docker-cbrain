@@ -1,12 +1,12 @@
 # Docker instructions
 
-* To build the containers:
+## To build the containers
 ```
 ./Docker/build.sh
 ```
 The `build.sh` script has to be run from the base CBRAIN installation directory, not from `Docker`.
 
-* To start a CBRAIN portal:
+## To start a CBRAIN portal
 ```
 cd Docker
 source .env
@@ -16,14 +16,14 @@ Be careful to write down the CBRAIN admin password the first time you run `docke
 
 The CBRAIN portal is then available at http://localhost:3000. It has a data provider, a bourreau, and the Diagnostics tool configured.
 
-* Files and directories
+## Files and directories
   * `Dockerfiles`: Dockerfiles for the base CBRAIN, portal and bourreau images.
   * `entry_points`: Bash scripts used as container entry points.
   * `init_portal`: Ruby scripts used to initialize the database with a data provider, a bourreau and a tool.
   * `templates`: Templates for portal and bourreau configuration files, instantiated in the entry point scripts.
   * `volumes`: Directory where the mounted persistent volumes are created.
 
-* Startup process
+## Startup process
 
 The following containers are started (see configuration in `docker-compose.yml`):
 1. MariaDB database
