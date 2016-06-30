@@ -2,9 +2,8 @@
 
 ## To build the containers
 ```
-./Docker/build.sh
+./build.sh
 ```
-The `build.sh` script has to be run from the base CBRAIN installation directory, not from `Docker`.
 
 ## To start a CBRAIN portal
 ```
