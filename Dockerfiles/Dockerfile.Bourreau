@@ -60,7 +60,7 @@ CMD []
 #                       starts.
 #
 # /home/cbrain/cbrain_task_directories: where the task directories
-                                        will be stored.
+#                                       will be stored.
  
 VOLUME /home/cbrain/cbrain_data_cache \
        /home/cbrain/plugins \
