@@ -33,11 +33,9 @@ fi
 groupmod -g ${GROUPID} cbrain || die "groupmod -g ${GROUPID} cbrain failed"
 usermod -u ${USERID} cbrain  || die "usermod -u ${USERID} cbrain" # the files in /home/cbrain are updated automatically
 VOLUMES="/home/cbrain/cbrain_data_cache \
-                  /home/cbrain/.ssh \
-                  /home/cbrain/plugins \
-                  /home/cbrain/data_provider"
-# This folder may not be always mounted
-[ -d /home/cbrain/.bourreau_ssh ] && VOLUMES="$VOLUMES /home/cbrain/.bourreau_ssh"
+         /home/cbrain/.ssh \
+         /home/cbrain/plugins \
+         /home/cbrain/data_provider"
 for volume in $VOLUMES
 do
     echo "chowning ${volume}"

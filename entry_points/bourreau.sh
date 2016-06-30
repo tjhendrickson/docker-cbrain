@@ -14,6 +14,14 @@ function die {
 
 # Installs the plugins in the Bourreau.
 function install_plugins_bourreau { 
+    cd ${HOME}/cbrain/Bourreau/cbrain_plugins             || die "Cannot cd to \
+                                                                ${HOME}/cbrain/Bourreau/cbrain_plugins"
+    for plugin_dir in `ls -d /home/cbrain/plugins/* 2>/dev/null`
+    do
+        echo "Found plugin ${plugin_dir}"
+        test -d `basename ${plugin_dir}` || ln -s ${plugin_dir}                                  || die "Cannot ln -s ${plugin_dir}"
+    done
+
     cd ${HOME}/cbrain/Bourreau          || die "Cannot cd to \
                                            Bourreau directory"
     bundle install                      || die "Cannot bundle install"

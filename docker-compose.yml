@@ -32,6 +32,7 @@ services:
   cbrain-bourreau:
     image: mcin/cbrain_bourreau:dev
     volumes:
+     - ./volumes/data_provider:/home/cbrain/data_provider
      - ./volumes/portal/.ssh:/home/cbrain/.portal_ssh
      - ./volumes/bourreau/.ssh:/home/cbrain/.ssh
      - ./volumes/bourreau/data_cache:/home/cbrain/cbrain_data_cache

@@ -21,7 +21,7 @@ function install_plugins_portal {
     for plugin_dir in `ls -d /home/cbrain/plugins/* 2>/dev/null`
     do
         echo "Found plugin ${plugin_dir}"
-        ln -s ${plugin_dir}                                  || die "Cannot ln -s ${plugin_dir}"
+        test -d `basename ${plugin_dir}` || ln -s ${plugin_dir}                                  || die "Cannot ln -s ${plugin_dir}"
     done
     cd ${HOME}/cbrain/BrainPortal                            || die "Cannot cd to \
                                                                      BrainPortal directory"
@@ -112,6 +112,7 @@ check_initialized || initialize
 
 echo "Starting portal"
 rm -f /home/cbrain/cbrain/BrainPortal/tmp/pids/*.pid
+rm -f ${HOME}/.ssh/known_hosts
 install_plugins_portal 
 cd $HOME/cbrain/BrainPortal             || die "Cannot cd to BrainPortal directory"
 exec rails server thin -e ${MODE} -p 3000    || die "Cannot start BrainPortal"
