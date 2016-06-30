@@ -46,6 +46,8 @@ services:
     volumes:
      - ./volumes/portal/.ssh:/home/cbrain/.portal_ssh
      - ./volumes/data_provider/data:/home/cbrain/data
+    depends_on:
+     - cbrain-portal
     environment:
       USERID: ${USERID}
       GROUPID: ${GROUPID}
