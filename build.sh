@@ -1,5 +1,19 @@
 #!/bin/bash -e
 
+get_script_dir () {
+     SOURCE="${BASH_SOURCE[0]}"
+
+     while [ -h "$SOURCE" ]; do
+          DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+          SOURCE="$( readlink "$SOURCE" )"
+          [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+     done
+     cd -P "$( dirname "$SOURCE" )"
+     pwd
+}
+
+ROOT_DIR="$(get_script_dir)/.."
+
 VERSION=${1:-dev}
 
 function usage {
@@ -19,6 +33,8 @@ fi
 
 DOCKERFILE_DIR=Docker/Dockerfiles
 IMAGE_NAME=mcin/cbrain
+
+cd $ROOT_DIR
 
 echo "#### Building base CBRAIN container ###"
 docker build -f ${DOCKERFILE_DIR}/Dockerfile -t mcin/cbrain .

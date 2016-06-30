@@ -54,7 +54,7 @@ ENV RUBY_VERSION=2.2.0
 RUN cd $HOME && \
     curl -sSL https://rvm.io/mpapis.asc | gpg2 --import - && \
     curl -sSL https://get.rvm.io | bash -s stable && \
-    echo source ${HOME}/.profile >> ${HOME}/.bashrf && \
+    echo source ${HOME}/.profile >> ${HOME}/.bashrc && \
     source /home/cbrain/.bashrc && \
     rvm install $RUBY_VERSION && \
     rvm --default $RUBY_VERSION && \
