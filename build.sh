@@ -36,15 +36,39 @@ IMAGE_NAME=mcin/cbrain
 
 cd $ROOT_DIR
 
-echo "#### Building base CBRAIN container ###"
+echo
+echo "#########################"
+echo "# Building DataProvider #"
+echo "#########################"
+echo 
+
+docker build -f ${DOCKERFILE_DIR}/Dockerfile.DataProvider -t mcin/cbrain_data_provider .
+docker tag ${IMAGE_NAME}_data_provider ${IMAGE_NAME}_data_provider:$VERSION
+
+echo
+echo "#########################"
+echo "# Building CBRAIN base  #"
+echo "#########################"
+echo 
+
 docker build -f ${DOCKERFILE_DIR}/Dockerfile -t mcin/cbrain .
 docker tag ${IMAGE_NAME} ${IMAGE_NAME}:$VERSION
 
-echo "### Building Portal ###"
+echo
+echo "#########################"
+echo "#    Building Portal    #"
+echo "#########################"
+echo 
+
 docker build -f ${DOCKERFILE_DIR}/Dockerfile.Portal -t mcin/cbrain_portal .
 docker tag ${IMAGE_NAME}_portal ${IMAGE_NAME}_portal:$VERSION
 
-echo "### Building Bourreau ###"
+echo
+echo "#########################"
+echo "#    Building Bourreau  #"
+echo "#########################"
+echo 
+
 docker build -f ${DOCKERFILE_DIR}/Dockerfile.Bourreau -t mcin/cbrain_bourreau .
 docker tag ${IMAGE_NAME}_bourreau ${IMAGE_NAME}_bourreau:$VERSION
 

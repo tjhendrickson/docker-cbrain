@@ -9,7 +9,7 @@
 ```
 cd Docker
 source .env
-docker-compose up
+USERID=`id -u` GROUPID=`id -g` docker-compose up
 ```
 Be careful to write down the CBRAIN admin password the first time you run `docker-compose up`.
 

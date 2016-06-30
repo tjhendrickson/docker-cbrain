@@ -2,15 +2,11 @@
 
 source /home/cbrain/.bashrc
 
-#####################
-# Utility functions #
-#####################
+source /home/cbrain/cbrain/Docker/entry_points/functions.sh
 
-# Prints a message and exits with a non-zero code.
-function die {
-    echo $*
-    exit 1
-}
+############################
+# Utility functions #
+############################
 
 # Installs the plugins in the Bourreau.
 function install_plugins_bourreau { 

@@ -2,15 +2,11 @@
 
 source /home/cbrain/.bashrc
 
+source /home/cbrain/cbrain/Docker/entry_points/functions.sh
+
 #####################
 # Utility functions #
 #####################
-
-# Prints a message and exits with a non-zero code.
-function die {
-    echo $*
-    exit 1
-}
 
 # Installs the plugins in the portal. Plugins may be dropped in a
 # persistent volume outside of the container at any time. We should

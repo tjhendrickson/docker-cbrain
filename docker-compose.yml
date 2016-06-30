@@ -3,7 +3,6 @@ services:
   cbrain-portal:
     image: mcin/cbrain_portal:dev
     volumes:
-     - ./volumes/data_provider:/home/cbrain/data_provider
      - ./volumes/portal/data_cache:/home/cbrain/cbrain_data_cache
      - ./volumes/portal/.ssh:/home/cbrain/.ssh
      - ./volumes/portal/plugins:/home/cbrain/plugins
@@ -32,12 +31,21 @@ services:
   cbrain-bourreau:
     image: mcin/cbrain_bourreau:dev
     volumes:
-     - ./volumes/data_provider:/home/cbrain/data_provider
      - ./volumes/portal/.ssh:/home/cbrain/.portal_ssh
      - ./volumes/bourreau/.ssh:/home/cbrain/.ssh
      - ./volumes/bourreau/data_cache:/home/cbrain/cbrain_data_cache
      - ./volumes/bourreau/plugins:/home/cbrain/plugins
      - ./volumes/bourreau/cbrain_task_directories:/home/cbrain/cbrain_task_directories
+    environment:
+      USERID: ${USERID}
+      GROUPID: ${GROUPID}
+      PORTAL_PORT: ${PORT}
+      PORTAL_HOST: cbrain-portal
+  data-provider:
+    image: mcin/cbrain_data_provider:dev
+    volumes:
+     - ./volumes/portal/.ssh:/home/cbrain/.portal_ssh
+     - ./volumes/data_provider/data:/home/cbrain/data
     environment:
       USERID: ${USERID}
       GROUPID: ${GROUPID}

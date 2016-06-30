@@ -1,15 +1,6 @@
 #!/bin/bash -e
 
-
-#####################
-# Utility functions #
-#####################
-
-# Prints a message and exits with a non-zero code.
-function die {
-    echo $*
-    exit 1
-}
+source /home/cbrain/cbrain/Docker/entry_points/functions.sh
 
 ###############
 # Main script #

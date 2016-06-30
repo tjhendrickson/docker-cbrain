@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-source /home/cbrain/cbrain/Docker/entry_points/functions.sh
+source /home/cbrain/entry_points/functions.sh
 
 ###############
 # Main script #
@@ -22,10 +22,7 @@ fi
 
 groupmod -g ${GROUPID} cbrain || die "groupmod -g ${GROUPID} cbrain failed"
 usermod -u ${USERID} cbrain  || die "usermod -u ${USERID} cbrain" # the files in /home/cbrain are updated automatically
-for volume in /home/cbrain/cbrain_data_cache \
-              /home/cbrain/plugins \
-              /home/cbrain/cbrain_task_directories \
-              /home/cbrain/.ssh
+for volume in /home/cbrain/data
 do
     echo "chowning ${volume}"
     chown cbrain:cbrain ${volume}
@@ -33,7 +30,7 @@ done
 generate_ssh_host_keys
 
 # Initialize Bourreau configuration and plugins
-su cbrain "/home/cbrain/cbrain/Docker/entry_points/bourreau.sh"
+su cbrain "/home/cbrain/entry_points/data_provider.sh"
 
-echo "Starting bourreau"
+echo "Starting data provider"
 exec /usr/sbin/sshd -D 
