@@ -1,0 +1,41 @@
+#!/bin/bash -e
+
+VERSION=${1:-dev}
+
+function usage {
+  echo "usage: $0 [-p] [-h]"
+  echo "       -p: pushes containers."
+  echo "       -h: prints help."
+}
+
+if [ "x$1" != "x" ]
+then
+  case $1 in 
+    "-p") PUSH=true;;
+    "-h") usage; exit 0;;
+    *) usage; exit 1;;
+  esac
+fi
+
+DOCKERFILE_DIR=Docker/Dockerfiles
+IMAGE_NAME=mcin/cbrain
+
+echo "#### Building base CBRAIN container ###"
+docker build -f ${DOCKERFILE_DIR}/Dockerfile -t mcin/cbrain .
+docker tag ${IMAGE_NAME} ${IMAGE_NAME}:$VERSION
+
+echo "### Building Portal ###"
+docker build -f ${DOCKERFILE_DIR}/Dockerfile.Portal -t mcin/cbrain_portal .
+docker tag ${IMAGE_NAME}_portal ${IMAGE_NAME}_portal:$VERSION
+
+echo "### Building Bourreau ###"
+docker build -f ${DOCKERFILE_DIR}/Dockerfile.Bourreau -t mcin/cbrain_bourreau .
+docker tag ${IMAGE_NAME}_bourreau ${IMAGE_NAME}_bourreau:$VERSION
+
+if [ "${PUSH}" = "true" ]
+then
+  echo "### Pushing containers ###"
+  docker push mcin/cbrain:$VERSION
+  docker push mcin/cbrain_portal:$VERSION
+  docker push mcin/cbrain_bourreau:$VERSION
+fi

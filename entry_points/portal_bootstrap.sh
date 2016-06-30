@@ -43,4 +43,4 @@ do
     echo "chowning ${volume}"
     chown cbrain:cbrain ${volume}
 done
-exec su cbrain "/home/cbrain/cbrain/Docker/portal.sh"
+exec su cbrain "/home/cbrain/cbrain/Docker/entry_points/portal.sh"

@@ -64,8 +64,10 @@ function initialize {
     rake db:schema:load RAILS_ENV=${MODE}   || die "Cannot load DB schema"
     rake db:seed RAILS_ENV=${MODE}          || die "Cannot seed DB"
     rake db:sanity:check RAILS_ENV=${MODE}  || die "Cannot sanity check DB"
+
+    # Some configuration scripts may need plugins to be installed
+    install_plugins_portal
     
-    # configure portal
     configure_portal
 }
 
@@ -75,7 +77,7 @@ function initialize {
 
 if [ -z "$MODE" ]
 then
-    echo "usage: portal.sh with the following environment variables"
+    echo "usage: portal.sh with the following environment variables:"
     echo
     echo "MODE:"
     echo "     development: starts the application in Rails development mode."
@@ -107,13 +109,6 @@ dockerize -wait tcp://${MYSQL_HOST}:${MYSQL_PORT} -timeout 90s || die "Cannot wa
 
 # Initializes the DB if it was not done before
 check_initialized || initialize
-
-# Automatic exchange of SSH keys
-if [ -d /home/cbrain/.bourreau_ssh ]
-then
-  cat /home/cbrain/.ssh/id_cbrain_portal.pub > /home/cbrain/.bourreau_ssh/authorized_keys
-  chmod 600 /home/cbrain/.bourreau_ssh/authorized_keys
-fi
 
 echo "Starting portal"
 rm -f /home/cbrain/cbrain/BrainPortal/tmp/pids/*.pid

@@ -1,5 +1,14 @@
 FROM mcin/cbrain
 
+USER root
+
+RUN yum install -y \
+      openssh-server && \
+    echo -e "Port 22\n" >> /etc/ssh/sshd_config && \
+    echo -e "PasswordAuthentication no\n" >> /etc/ssh/sshd_config && \
+    echo -e "ChallengeResponseAuthentication no\n" >> /etc/ssh/sshd_config && \
+    echo -e "PubkeyAuthentication yes\n" >> /etc/ssh/sshd_config
+
 USER cbrain
 
 ################################
@@ -10,14 +19,16 @@ USER cbrain
 #       so that bundling is not redone everytime the code is updated.
 
 # Copy Gemfiles
-RUN mkdir -p ${HOME}/cbrain/BrainPortal
-COPY ./BrainPortal/Gemfile /home/cbrain/cbrain/BrainPortal/
+RUN mkdir -p ${HOME}/cbrain/Bourreau
+COPY ./Bourreau/Gemfile /home/cbrain/cbrain/Bourreau/
 
-# Bundle portal
-RUN cd ${HOME}/cbrain/BrainPortal              && \
+# Bundle bourreau
+RUN source ~/.bashrc && \
+    cd ${HOME}/cbrain/Bourreau                 && \
     bundle install                             && \
     cd `bundle show sys-proctable`             && \
-    rake install
+    rake install                               && \
+    echo -e '[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*\n' >> /home/cbrain/.bashrc
 
 ####################
 # CBRAIN code copy #
@@ -31,9 +42,9 @@ RUN chown cbrain:cbrain -R /home/cbrain/cbrain
 # Ports and entry point #
 #########################
 
-EXPOSE 3000
+EXPOSE 22
 
-ENTRYPOINT ["/home/cbrain/cbrain/Docker/portal_bootstrap.sh"]
+ENTRYPOINT ["/home/cbrain/cbrain/Docker/entry_points/bourreau_bootstrap.sh"]
 CMD []
 
 ###########
@@ -48,13 +59,8 @@ CMD []
 #                       Will be installed when the portal
 #                       starts.
 #
-# /home/cbrain/.ssh:  public and private key created by the
-#                     portal to connect to
-#                     the Bourreaux and data providers.
-#
-# /home/cbrain/data_provider: a local data provider.
+# /home/cbrain/cbrain_task_directories: TODO
  
 VOLUME /home/cbrain/cbrain_data_cache \
-       /home/cbrain/.ssh  \
        /home/cbrain/plugins \
-       /home/cbrain/data_provider
+       /home/cbrain/cbrain_task_directories

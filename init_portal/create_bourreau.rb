@@ -1,3 +1,5 @@
+# Create a UNIX Bourreau based on the configuration used in docker-compose.yml
+
 b=Bourreau.new({:name                  => "Bourreau",
                 :user_id               => 1,
                 :group_id              => 1,

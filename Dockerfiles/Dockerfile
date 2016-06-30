@@ -54,7 +54,11 @@ ENV RUBY_VERSION=2.2.0
 RUN cd $HOME && \
     curl -sSL https://rvm.io/mpapis.asc | gpg2 --import - && \
     curl -sSL https://get.rvm.io | bash -s stable && \
-    source ${HOME}/.profile && \
+    echo source ${HOME}/.profile >> ${HOME}/.bashrf && \
+    source /home/cbrain/.bashrc && \
     rvm install $RUBY_VERSION && \
     rvm --default $RUBY_VERSION && \
+    echo source "\$(rvm ${RUBY_VERSION} do rvm env --path)" >> ${HOME}/.bashrc && \
+    source /home/cbrain/.bashrc && \
+    rvm info && \
     gem install bundler

@@ -1,3 +1,5 @@
+# Creates a local DataProvider
+
 d=DataProvider.new({:name => "local",
                     :type => "EnCbrainLocalDataProvider",
                     :user_id => 1,
