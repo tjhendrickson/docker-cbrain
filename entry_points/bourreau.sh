@@ -52,4 +52,4 @@ test -f /home/cbrain/.portal_ssh/id_cbrain_portal.pub || die "Cannot find portal
 
 cat /home/cbrain/.portal_ssh/id_cbrain_portal.pub >> /home/cbrain/.ssh/authorized_keys
 chmod 600 /home/cbrain/.ssh/authorized_keys
-
+rm -f /home/cbrain/.ssh/known_hosts
