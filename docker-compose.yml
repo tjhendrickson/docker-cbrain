@@ -37,8 +37,6 @@ services:
      - ./volumes/bourreau/data_cache:/home/cbrain/cbrain_data_cache
      - ./volumes/bourreau/plugins:/home/cbrain/plugins
      - ./volumes/bourreau/cbrain_task_directories:/home/cbrain/cbrain_task_directories
-    ports:
-     - "${SSH_PORT}:22"
     environment:
       USERID: ${USERID}
       GROUPID: ${GROUPID}
