@@ -26,7 +26,7 @@ function install_plugins_portal {
 }
 
 function update_dp_cache_dir {
-    mysql ${MYSQL_DATABASE} ${MYSQL_OPTIONS} -e "update remote_resources set dp_cache_dir='/home/cbrain/cbrain_data_cache'"    
+    mysql ${MYSQL_DATABASE} ${MYSQL_OPTIONS} -e "update remote_resources set dp_cache_dir='/home/cbrain/cbrain_data_cache'"
 }
 
 # Runs all the scripts in Docker/init_portal in the rails console of the portal
@@ -42,18 +42,18 @@ function configure_portal {
 
 # Runs a simple query to make sure we can access the DB.
 function check_connection {
-    mysql ${MYSQL_OPTIONS} -e "show databases;"  &>/dev/null    
+    mysql ${MYSQL_OPTIONS} -e "show databases;"  &>/dev/null
 }
 
 # Checks if the DB has been initialized. A more robust check might exist.
 function check_initialized {
-    mysql ${MYSQL_DATABASE} ${MYSQL_OPTIONS} -e "select 1 from active_record_logs limit 1;" &>/dev/null    
+    mysql ${MYSQL_DATABASE} ${MYSQL_OPTIONS} -e "select 1 from active_record_logs limit 1;" &>/dev/null
 }
 
 # Initializes the CBRAIN application (DB and DP cache dir)
 function initialize {
     echo "Initializing DB"
-        
+
     # DB initialization, seeding, and sanity check
     cd $HOME/cbrain/BrainPortal             || die "Cannot cd to BrainPortal directory"
     bundle                                  || die "Cannot bundle Rails application"
@@ -63,7 +63,7 @@ function initialize {
 
     # Some configuration scripts may need plugins to be installed
     install_plugins_portal
-    
+
     configure_portal
 }
 
@@ -79,20 +79,19 @@ then
     echo "     development: starts the application in Rails development mode."
     echo "     test:        starts the application in Rails test mode."
     echo "     production:  starts the application in Rails production mode."
+    echo "MYSQL_HOST: host for MySQL database"
+    echo "MYSQL_PORT: port for MySQL database"
+    echo "MYSQL_USER: user to connect to MySQL database"
+    echo "MYSQL_PASSWORD: password to connect to MySQL database"
     exit 1
 fi
 
 # Sets mysql HOST and PORT
-if [ "x${MYSQL_HOST}" = "x" ]
-then
-    MYSQL_HOST="mysql"
-fi
-MYSQL_PORT=3306
-[[ "x${MYSQL_HOST}" != "x" ]]     || die "MYSQL_HOST is not defined."
-[[ "x${MYSQL_PORT}" != "x" ]]     || die "MYSQL_PORT is not defined."
+MYSQL_HOST=${MYSQL_HOST:-mysql}
+MYSQL_PORT=${MYSQL_PORT:-3306}
 [[ "x${MYSQL_USER}" != "x" ]]     || die "MYSQL_USER is not defined."
 [[ "x${MYSQL_PASSWORD}" != "x" ]] || die "MYSQL_PASSWORD is not defined."
-MYSQL_OPTIONS="-h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USER} --password=${MYSQL_PASSWORD}"
+export MYSQL_OPTIONS="-h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USER} --password=${MYSQL_PASSWORD}"
 
 # Edits DB configuration file from template
 dockerize -template $HOME/cbrain/Docker/templates/database.yml.TEMPLATE:$HOME/cbrain/BrainPortal/config/database.yml || die "Cannot edit DB configuration file"
@@ -109,6 +108,6 @@ check_initialized || initialize
 echo "Starting portal"
 rm -f /home/cbrain/cbrain/BrainPortal/tmp/pids/*.pid
 rm -f ${HOME}/.ssh/known_hosts
-install_plugins_portal 
-cd $HOME/cbrain/BrainPortal             || die "Cannot cd to BrainPortal directory"
+install_plugins_portal
+cd $HOME/cbrain/BrainPortal                  || die "Cannot cd to BrainPortal directory"
 exec rails server thin -e ${MODE} -p 3000    || die "Cannot start BrainPortal"

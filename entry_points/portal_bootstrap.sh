@@ -14,7 +14,7 @@ then
     echo "     development: starts the application in Rails development mode."
     echo "     test:        starts the application in Rails test mode."
     echo "     production:  starts the application in Rails production mode."
-    echo 
+    echo
     echo "USERID: ID of the user that will run the CBRAIN portal."
     echo
     echo "GROUPID: group ID of the user that will run the CBRAIN portal."
@@ -31,4 +31,5 @@ do
     echo "chowning ${volume}"
     chown cbrain:cbrain ${volume}
 done
+
 exec su cbrain "/home/cbrain/cbrain/Docker/entry_points/portal.sh"
