@@ -42,11 +42,12 @@ function configure_portal {
 
 # Runs a simple query to make sure we can access the DB.
 function check_connection {
-    mysql ${MYSQL_OPTIONS} -e "show databases;"  &>/dev/null
+    mysql ${MYSQL_OPTIONS} -e "show databases;" &>/dev/null
 }
 
 # Checks if the DB has been initialized. A more robust check might exist.
 function check_initialized {
+    mysql ${MYSQL_OPTIONS} -e "show databases;" | grep ${MYSQL_DATABASE} &>/dev/null || die "CBrain database $MYSQL_DATABASE does not exist"
     mysql ${MYSQL_DATABASE} ${MYSQL_OPTIONS} -e "select 1 from active_record_logs limit 1;" &>/dev/null
 }
 
@@ -83,12 +84,14 @@ then
     echo "MYSQL_PORT: port for MySQL database"
     echo "MYSQL_USER: user to connect to MySQL database"
     echo "MYSQL_PASSWORD: password to connect to MySQL database"
+    echo "MYSQL_DATABASE: name of the MySQL database to use for CBrain"
     exit 1
 fi
 
 # Sets mysql HOST and PORT
 MYSQL_HOST=${MYSQL_HOST:-mysql}
 MYSQL_PORT=${MYSQL_PORT:-3306}
+MYSQL_DATABASE=${MYSQL_DATABASE:-cbrain}
 [[ "x${MYSQL_USER}" != "x" ]]     || die "MYSQL_USER is not defined."
 [[ "x${MYSQL_PASSWORD}" != "x" ]] || die "MYSQL_PASSWORD is not defined."
 export MYSQL_OPTIONS="-h ${MYSQL_HOST} -P ${MYSQL_PORT} -u ${MYSQL_USER} --password=${MYSQL_PASSWORD}"
@@ -101,6 +104,11 @@ dockerize -template $HOME/cbrain/Docker/templates/config_portal.rb.TEMPLATE:$HOM
 
 # Waits for DB to be available
 dockerize -wait tcp://${MYSQL_HOST}:${MYSQL_PORT} -timeout 90s || die "Cannot wait for ${MYSQL_HOST}:${MYSQL_PORT} to be up or timeout was reached"
+while ! check_connection
+do
+  echo "$(date) - still trying to connect to the database"
+  sleep 1
+done
 
 # Initializes the DB if it was not done before
 check_initialized || initialize
