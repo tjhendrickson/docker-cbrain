@@ -68,7 +68,11 @@ CMD []
 #
 # /home/cbrain/cbrain_task_directories: where the task directories
 #                                       will be stored.
- 
+#
+# /home/cbrain/.portal_ssh: it should contains the public SSH key of CBrain portal.
+#
+
 VOLUME /home/cbrain/cbrain_data_cache \
+       /home/cbrain/.portal_ssh \
        /home/cbrain/plugins \
        /home/cbrain/cbrain_task_directories

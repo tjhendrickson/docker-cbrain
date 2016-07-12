@@ -23,7 +23,7 @@ RUN yum install -y \
 
 ENV DOCKERIZE_VERSION v0.2.0
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
-    tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz 
+    tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
 #####################
 # Copy entry points #
@@ -47,6 +47,10 @@ CMD []
 # Volumes #
 ###########
 #
-# /data : data provider file directory.
- 
-VOLUME /home/cbrain/data
+# /home/cbrain/data : data provider file directory.
+#
+# /home/cbrain/.portal_ssh: it should contains the public SSH key of CBrain portal.
+#
+
+VOLUME /home/cbrain/data \
+       /home/cbrain/.portal_ssh

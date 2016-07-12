@@ -102,6 +102,12 @@ dockerize -template $HOME/cbrain/Docker/templates/database.yml.TEMPLATE:$HOME/cb
 # Edits portal name from template
 dockerize -template $HOME/cbrain/Docker/templates/config_portal.rb.TEMPLATE:$HOME/cbrain/BrainPortal/config/initializers/config_portal.rb || die "Cannot edit CBRAIN configuration file"
 
+# Edits data provider configuration from template
+dockerize -template $HOME/cbrain/Docker/templates/create_dp.rb.TEMPLATE:$HOME/cbrain/Docker/init_portal/create_dp.rb || die "Cannot edit Create DP configuration file"
+
+# Edits bourreau configuration from template
+dockerize -template $HOME/cbrain/Docker/templates/create_bourreau.rb.TEMPLATE:$HOME/cbrain/Docker/init_portal/create_bourreau.rb || die "Cannot edit Create Bourreau configuration file"
+
 # Waits for DB to be available
 dockerize -wait tcp://${MYSQL_HOST}:${MYSQL_PORT} -timeout 90s || die "Cannot wait for ${MYSQL_HOST}:${MYSQL_PORT} to be up or timeout was reached"
 while ! check_connection
