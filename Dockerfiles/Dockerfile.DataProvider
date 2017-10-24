@@ -1,6 +1,7 @@
-FROM centos:6
+FROM centos:7.4.1708
 
-RUN yum install -y \
+RUN yum update -y && \
+    yum install -y \
       wget \
       rsync \
       openssh-server && \
@@ -21,7 +22,7 @@ RUN yum install -y \
 # Dockerize is used in run.sh to edit template configuration files and
 # to wait for the DB to be started before starting the portal
 
-ENV DOCKERIZE_VERSION v0.2.0
+ENV DOCKERIZE_VERSION=v0.5.0
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
     tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 

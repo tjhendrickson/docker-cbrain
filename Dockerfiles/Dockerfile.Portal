@@ -41,7 +41,7 @@ RUN chown cbrain:cbrain -R /home/cbrain/cbrain
 
 EXPOSE 3000
 
-ENTRYPOINT ["/home/cbrain/cbrain/Docker/entry_points/portal_bootstrap.sh"]
+ENTRYPOINT ["/usr/local/bin/dumb-init", "/home/cbrain/cbrain/Docker/entry_points/portal_bootstrap.sh"]
 CMD []
 
 ###########

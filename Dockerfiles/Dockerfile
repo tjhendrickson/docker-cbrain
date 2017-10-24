@@ -1,4 +1,4 @@
-FROM centos:6
+FROM centos:7.4.1708
 
 #####################################
 # Package updates and installations #
@@ -7,7 +7,7 @@ FROM centos:6
 # Note: keep the package list alphabetically
 #       ordered to facilitate parsing
 
-RUN yum update -y  && \
+RUN yum update -y && \
     yum install -y \
       autoconf \
       automake \
@@ -38,10 +38,15 @@ RUN yum update -y  && \
 
 # Dockerize is used in run.sh to edit template configuration files and
 # to wait for the DB to be started before starting the portal
+# Dumb-init is an init process that can be used in Docker containers.
+# In particular, it takes care of removing zombie processes inside a running Docker container.
 
-ENV DOCKERIZE_VERSION v0.2.0
+ENV DOCKERIZE_VERSION=v0.5.0 \
+    DUMB_INIT_VERSION=1.2.0
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
-    tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz 
+    tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
+    wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_amd64 && \
+    chmod +x /usr/local/bin/dumb-init
 
 #####################
 # Ruby installation #
@@ -49,7 +54,7 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 
 USER cbrain
 
-ENV RUBY_VERSION=2.2.0
+ENV RUBY_VERSION=2.2.8
 
 RUN cd $HOME && \
     curl -sSL https://rvm.io/mpapis.asc | gpg2 --import - && \

@@ -19,7 +19,7 @@ USER cbrain
 #       so that bundling is not redone everytime the code is updated.
 
 # Copy Gemfiles
-RUN mkdir -p ${HOME}/cbrain/Bourreau
+RUN mkdir -p ${HOME}/cbrain/Bourreau ${HOME}/.ssh && chmod -R 700 ${HOME}/.ssh
 COPY ./Bourreau/Gemfile /home/cbrain/cbrain/Bourreau/
 
 # Bundle bourreau
@@ -51,7 +51,7 @@ RUN chown cbrain:cbrain -R /home/cbrain/cbrain
 
 EXPOSE 22
 
-ENTRYPOINT ["/home/cbrain/cbrain/Docker/entry_points/bourreau_bootstrap.sh"]
+ENTRYPOINT ["/usr/local/bin/dumb-init", "/home/cbrain/cbrain/Docker/entry_points/bourreau_bootstrap.sh"]
 CMD []
 
 ###########

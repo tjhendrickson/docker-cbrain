@@ -6,7 +6,7 @@ d=DataProvider.new({:name => "MyStorage",
                     :group_id => 1,
                     :remote_user => "{{ default .Env.CBRAIN_DATA_PROVIDER_USER "\"cbrain\"" }}",
                     :remote_host => "{{ default .Env.CBRAIN_DATA_PROVIDER_HOST "\"data-provider\"" }}",
-                    :remote_port => {{ default .Env.CBRAIN_DATA_PROVIDER_PORT 22 }},
+                    :remote_port => {{ default .Env.CBRAIN_DATA_PROVIDER_PORT "22" }},
                     :remote_dir => "/home/cbrain/data",
                     :description => "ssh data provider",
                     :online => true})

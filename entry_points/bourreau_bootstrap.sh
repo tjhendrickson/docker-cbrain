@@ -36,4 +36,4 @@ generate_ssh_host_keys
 su cbrain "/home/cbrain/cbrain/Docker/entry_points/bourreau.sh"
 
 echo "Starting bourreau"
-exec /usr/sbin/sshd -D 
+exec /usr/sbin/sshd -D
