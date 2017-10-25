@@ -1,0 +1,3 @@
+[submodule "cbrain"]
+	path = cbrain
+	url = https://github.com/aces/cbrain.git
