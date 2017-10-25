@@ -11,7 +11,7 @@ USER cbrain
 
 # Copy Gemfiles
 RUN mkdir -p ${HOME}/cbrain/BrainPortal
-COPY ./BrainPortal/Gemfile /home/cbrain/cbrain/BrainPortal/
+COPY ./cbrain/BrainPortal/Gemfile /home/cbrain/cbrain/BrainPortal/
 
 # Bundle portal
 RUN source ~/.bashrc && \
@@ -24,8 +24,8 @@ RUN source ~/.bashrc && \
 # CBRAIN code copy #
 ####################
 
-COPY *.txt *.md *.sh *.csv /home/cbrain/cbrain/
-COPY BrainPortal/ /home/cbrain/cbrain/BrainPortal/
+COPY ./cbrain/*.{txt,md,sh,csv} /home/cbrain/cbrain/
+COPY ./cbrain/BrainPortal/ /home/cbrain/cbrain/BrainPortal/
 COPY Docker/entry_points/portal_bootstrap.sh \
      Docker/entry_points/portal.sh \
      Docker/entry_points/functions.sh /home/cbrain/cbrain/Docker/entry_points/

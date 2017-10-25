@@ -4,6 +4,7 @@ USER root
 
 RUN yum install -y \
       openssh-server && \
+    yum clean all && \
     echo -e "Port 22\n" >> /etc/ssh/sshd_config && \
     echo -e "PasswordAuthentication no\n" >> /etc/ssh/sshd_config && \
     echo -e "ChallengeResponseAuthentication no\n" >> /etc/ssh/sshd_config && \
@@ -20,7 +21,7 @@ USER cbrain
 
 # Copy Gemfiles
 RUN mkdir -p ${HOME}/cbrain/Bourreau ${HOME}/.ssh && chmod -R 700 ${HOME}/.ssh
-COPY ./Bourreau/Gemfile /home/cbrain/cbrain/Bourreau/
+COPY ./cbrain/Bourreau/Gemfile /home/cbrain/cbrain/Bourreau/
 
 # Bundle bourreau
 RUN source ~/.bashrc && \
@@ -34,9 +35,9 @@ RUN source ~/.bashrc && \
 # CBRAIN code copy #
 ####################
 
-COPY *.txt *.md *.sh *.csv /home/cbrain/cbrain/
-COPY Bourreau/ /home/cbrain/cbrain/Bourreau/
-COPY BrainPortal/ /home/cbrain/cbrain/BrainPortal/
+COPY ./cbrain/*.{txt,md,sh,csv} /home/cbrain/cbrain/
+COPY ./cbrain/Bourreau/ /home/cbrain/cbrain/Bourreau/
+COPY ./cbrain/BrainPortal/ /home/cbrain/cbrain/BrainPortal/
 COPY Docker/entry_points/bourreau_bootstrap.sh \
      Docker/entry_points/bourreau.sh \
      Docker/entry_points/functions.sh /home/cbrain/cbrain/Docker/entry_points/

@@ -89,7 +89,7 @@ git pull --tags
 updated_version=$(bumpversion --dry-run --list patch | grep current_version | sed -r s,"^.*=",,)
 
 # Checkout CBrain project to the updated version
-(cd cbrain; git checkout "v${updated_version%%-*}")
+(cd cbrain; git checkout "${updated_version%%-*}")
 # Build again to update the version
 echo "Build the project for distribution..."
 ./build.sh

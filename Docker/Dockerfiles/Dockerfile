@@ -29,8 +29,10 @@ RUN yum update -y && \
       readline-devel \
       sqlite-devel \
       zlib-devel \
-      wget && \
-   useradd cbrain
+      wget \
+      which && \
+    yum clean all && \
+    useradd cbrain
 
 ##########################
 # Dockerize installation #
