@@ -12,6 +12,7 @@ RUN yum update -y && \
       autoconf \
       automake \
       bison \
+      bzip2 \
       gcc-c++ \
       git \
       glibc-devel \
@@ -23,6 +24,7 @@ RUN yum update -y && \
       libxml2 \
       libxml2-devel \
       libyaml-devel \
+      make \
       mysql-devel \
       openssl-devel \
       patch \

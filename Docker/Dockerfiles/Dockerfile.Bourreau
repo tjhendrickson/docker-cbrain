@@ -1,4 +1,5 @@
-FROM mcin/cbrain
+ARG BASE_IMAGE=mcin/cbrain
+FROM ${BASE_IMAGE}
 
 USER root
 
@@ -35,7 +36,7 @@ RUN source ~/.bashrc && \
 # CBRAIN code copy #
 ####################
 
-COPY ./cbrain/*.{txt,md,sh,csv} /home/cbrain/cbrain/
+COPY ./cbrain/*.txt ./cbrain/*.md ./cbrain/*.sh ./cbrain/*.csv /home/cbrain/cbrain/
 COPY ./cbrain/Bourreau/ /home/cbrain/cbrain/Bourreau/
 COPY ./cbrain/BrainPortal/ /home/cbrain/cbrain/BrainPortal/
 COPY Docker/entry_points/bourreau_bootstrap.sh \

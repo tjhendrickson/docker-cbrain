@@ -9,7 +9,7 @@ source /home/cbrain/cbrain/Docker/entry_points/functions.sh
 ############################
 
 # Installs the plugins in the Bourreau.
-function install_plugins_bourreau { 
+function install_plugins_bourreau {
     cd ${HOME}/cbrain/Bourreau/cbrain_plugins             || die "Cannot cd to \
                                                                 ${HOME}/cbrain/Bourreau/cbrain_plugins"
     for plugin_dir in `ls -d /home/cbrain/plugins/* 2>/dev/null`

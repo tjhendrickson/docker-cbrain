@@ -34,4 +34,4 @@ generate_ssh_host_keys
 su cbrain "/home/cbrain/entry_points/data_provider.sh"
 
 echo "Starting data provider"
-exec /usr/sbin/sshd -D 
+exec /usr/sbin/sshd -D

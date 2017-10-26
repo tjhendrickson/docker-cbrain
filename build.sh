@@ -24,7 +24,7 @@ function usage {
 
 if [ "x$1" != "x" ]
 then
-  case $1 in 
+  case $1 in
     "-p") PUSH=true;;
     "-h") usage; exit 0;;
     *) usage; exit 1;;
@@ -48,7 +48,7 @@ echo
 echo "#########################"
 echo "# Building DataProvider #"
 echo "#########################"
-echo 
+echo
 
 $DOCKER build -f ${DOCKERFILE_DIR}/Dockerfile.DataProvider -t ${IMAGE_NAME}_data_provider .
 $DOCKER tag ${IMAGE_NAME}_data_provider ${IMAGE_NAME}_data_provider:$VERSION
@@ -57,7 +57,7 @@ echo
 echo "#########################"
 echo "# Building CBRAIN base  #"
 echo "#########################"
-echo 
+echo
 
 $DOCKER build -f ${DOCKERFILE_DIR}/Dockerfile -t ${IMAGE_NAME} .
 $DOCKER tag ${IMAGE_NAME} ${IMAGE_NAME}:$VERSION
@@ -66,18 +66,18 @@ echo
 echo "#########################"
 echo "#    Building Portal    #"
 echo "#########################"
-echo 
+echo
 
-$DOCKER build -f ${DOCKERFILE_DIR}/Dockerfile.Portal -t ${IMAGE_NAME}_portal .
+$DOCKER build -f ${DOCKERFILE_DIR}/Dockerfile.Portal --build-arg BASE_IMAGE=${IMAGE_NAME} -t ${IMAGE_NAME}_portal .
 $DOCKER tag ${IMAGE_NAME}_portal ${IMAGE_NAME}_portal:$VERSION
 
 echo
 echo "#########################"
 echo "#    Building Bourreau  #"
 echo "#########################"
-echo 
+echo
 
-$DOCKER build -f ${DOCKERFILE_DIR}/Dockerfile.Bourreau -t ${IMAGE_NAME}_bourreau .
+$DOCKER build -f ${DOCKERFILE_DIR}/Dockerfile.Bourreau  --build-arg BASE_IMAGE=${IMAGE_NAME} -t ${IMAGE_NAME}_bourreau .
 $DOCKER tag ${IMAGE_NAME}_bourreau ${IMAGE_NAME}_bourreau:$VERSION
 
 if [ "${PUSH}" = "true" ]
