@@ -17,7 +17,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.  
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
 # Instructions:
@@ -41,7 +41,7 @@ class CBRAIN
   #
   # If the name is changed with the interface, then this
   # file must be adjusted accordingly.
-  CBRAIN_RAILS_APP_NAME =  {{ default .Env.CBRAIN_BOURREAU_NAME "\"Bourreau\"" }}
+  CBRAIN_RAILS_APP_NAME =  "{{ default .Env.CBRAIN_BOURREAU_NAME "Bourreau" }}"
 
   # All other configuration variables are now stored
   # in the database, and there is an interface to edit them!

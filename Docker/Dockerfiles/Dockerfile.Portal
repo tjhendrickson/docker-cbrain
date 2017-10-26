@@ -1,6 +1,9 @@
 ARG BASE_IMAGE=mcin/cbrain
 FROM ${BASE_IMAGE}
 
+USER root
+RUN yum install -y mysql && yum clean all
+
 USER cbrain
 
 ################################

@@ -1,25 +1,8 @@
-version: '2'
+version: '2.1'
 services:
-  cbrain-portal:
-    image: mcin/cbrain_portal:dev
-    volumes:
-     - ./volumes/portal/data_cache:/home/cbrain/cbrain_data_cache
-     - ./volumes/portal/.ssh:/home/cbrain/.ssh
-     - ./volumes/portal/plugins:/home/cbrain/plugins
-    ports:
-     - "${PORT}:3000"
-    depends_on:
-     - mysql
-    environment:
-      MODE: ${MODE}
-      USERID: ${USERID}
-      GROUPID: ${GROUPID}
-      MYSQL_HOST: "mysql"
-      MYSQL_USER: "cbrain_test"
-      MYSQL_DATABASE: "cbrain"
-      MYSQL_PASSWORD: "cbrain4567"
+
   mysql:
-    image: mariadb:10.0
+    image: mariadb:10.3.2
     volumes:
       - ./volumes/mysql-data:/var/lib/mysql
     environment:
@@ -27,33 +10,73 @@ services:
       MYSQL_USER: "cbrain_test"
       MYSQL_DATABASE: "cbrain"
       MYSQL_PASSWORD: "cbrain4567"
+
+  wait_db:
+    image: "dhwebb/wait4mysql:light"
+    depends_on:
+      - mysql
+    environment:
+      HOST: "mysql"
+      USER: "cbrain_test"
+      PASSWORD: "cbrain4567"
+      TIMOUT: 60
+
+  cbrain-portal:
+    image: hbpmip/cbrain_portal
+    volumes:
+     - ./volumes/portal/data_cache:/home/cbrain/cbrain_data_cache
+     - ./volumes/portal/.ssh:/home/cbrain/.ssh
+     - ./volumes/portal/plugins:/home/cbrain/plugins
+    ports:
+     - "${PORT:-3000}:3000"
+    depends_on:
+     - mysql
+    environment:
+      MODE: "${MODE:-development}"
+      USERID: ${USERID}
+      GROUPID: ${GROUPID}
+      MYSQL_HOST: "mysql"
+      MYSQL_PORT: "3306"
+      MYSQL_USER: "cbrain_test"
+      MYSQL_DATABASE: "cbrain"
+      MYSQL_PASSWORD: "cbrain4567"
+
+  wait_portal:
+    image: "waisbrot/wait"
+    depends_on:
+      - cbrain-portal
+    environment:
+      TARGETS: "cbrain-portal:3000"
+      TIMOUT: 60
+
   cbrain-bourreau:
-    image: mcin/cbrain_bourreau:dev
+    image: hbpmip/cbrain_bourreau
     volumes:
      - ./volumes/portal/.ssh:/home/cbrain/.portal_ssh
      - ./volumes/bourreau/data_cache:/home/cbrain/cbrain_data_cache
      - ./volumes/bourreau/plugins:/home/cbrain/plugins
      - ./volumes/bourreau/cbrain_task_directories:/home/cbrain/cbrain_task_directories
     ports:
-     - "${BOURREAU_SSH_PORT}:22"
+     - "${BOURREAU_SSH_PORT:-1022}:22"
     depends_on:
      - cbrain-portal
     environment:
       USERID: ${USERID}
       GROUPID: ${GROUPID}
-      PORTAL_PORT: ${PORT}
+      PORTAL_PORT: "${PORT:-3000}"
       PORTAL_HOST: cbrain-portal
+
   data-provider:
-    image: mcin/cbrain_data_provider:dev
+    image: hbpmip/cbrain_data_provider
     volumes:
      - ./volumes/portal/.ssh:/home/cbrain/.portal_ssh
      - ./volumes/data_provider/data:/home/cbrain/data
     ports:
-     - "${PROVIDER_SSH_PORT}:22"
+     - "${PROVIDER_SSH_PORT:-1122}:22"
     depends_on:
      - cbrain-portal
     environment:
       USERID: ${USERID}
       GROUPID: ${GROUPID}
-      PORTAL_PORT: ${PORT}
+      PORTAL_PORT: "${PORT:-3000}"
       PORTAL_HOST: cbrain-portal
