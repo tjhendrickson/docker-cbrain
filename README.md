@@ -70,3 +70,9 @@ Every time the data provider starts, it:
 * Waits for the portal to be started.
 * Copy the portal's public key in its `authorized_keys` file.
 * Starts `sshd`.
+
+# Acknowledgements
+
+This work has been funded in part by the European Union Seventh Framework Program (FP7/2007­2013) under grant agreement no. 604102 (HBP)
+
+This work is part of SP8 of the Human Brain Project (SGA1).
