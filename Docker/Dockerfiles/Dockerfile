@@ -45,7 +45,7 @@ RUN yum update -y && \
 # Dumb-init is an init process that can be used in Docker containers.
 # In particular, it takes care of removing zombie processes inside a running Docker container.
 
-ENV DOCKERIZE_VERSION=v0.5.0 \
+ENV DOCKERIZE_VERSION=v0.6.0 \
     DUMB_INIT_VERSION=1.2.0
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
     tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
