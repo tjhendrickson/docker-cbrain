@@ -27,8 +27,11 @@ fi
 source .env
 DOCKER_COMPOSE_UID="USERID=$(id -u $USER) GROUPID=$(id -g $USER) $DOCKER_COMPOSE"
 
+echo "$DOCKER_COMPOSE_UID up -d mysql"
 eval "$DOCKER_COMPOSE_UID up -d mysql"
+echo "$DOCKER_COMPOSE_UID run --rm wait_db"
 eval "$DOCKER_COMPOSE_UID run --rm wait_db"
+echo "$DOCKER_COMPOSE_UID up -d cbrain-portal"
 eval "$DOCKER_COMPOSE_UID up -d cbrain-portal"
 eval "$DOCKER_COMPOSE_UID run --rm wait_portal"
 eval "$DOCKER_COMPOSE_UID up -d cbrain-bourreau"

@@ -2,7 +2,7 @@ ARG BASE_IMAGE=mcin/cbrain
 FROM ${BASE_IMAGE}
 
 USER root
-RUN yum install -y mysql && yum clean all
+RUN yum install -y mysql libsodium libsodium-dev && yum clean all
 
 USER cbrain
 
@@ -15,29 +15,38 @@ USER cbrain
 
 # Copy Gemfiles
 RUN mkdir -p ${HOME}/cbrain/BrainPortal
+COPY ./cbrain/BrainPortal/ /home/cbrain/cbrain/BrainPortal/
 COPY ./cbrain/BrainPortal/Gemfile /home/cbrain/cbrain/BrainPortal/
+COPY ./cbrain/BrainPortal/Rakefile /home/cbrain/cbrain/BrainPortal/
 
 # Bundle portal
 RUN source ~/.bashrc && \
-    cd ${HOME}/cbrain/BrainPortal              && \
+    cd /home/cbrain/cbrain/BrainPortal              && \
     bundle install                             && \
     cd `bundle show sys-proctable`             && \
     rake install
 
+USER root
+RUN chmod 777 -R /home/cbrain/cbrain/BrainPortal/
+RUN chown cbrain:cbrain -R /home/cbrain/cbrain
+USER cbrain
+RUN source ~/.bashrc && \
+    cd /home/cbrain/cbrain/BrainPortal              && \
+    rake cbrain:plugins:install:all
 ####################
 # CBRAIN code copy #
 ####################
 
 COPY ./cbrain/*.txt ./cbrain/*.md ./cbrain/*.sh ./cbrain/*.csv /home/cbrain/cbrain/
 COPY ./cbrain/BrainPortal/ /home/cbrain/cbrain/BrainPortal/
-COPY Docker/entry_points/portal_bootstrap.sh \
-     Docker/entry_points/portal.sh \
-     Docker/entry_points/functions.sh /home/cbrain/cbrain/Docker/entry_points/
+COPY Docker/entry_points/ /home/cbrain/cbrain/Docker/entry_points/
+COPY Docker/entry_points/portal.sh /home/cbrain/cbrain/Docker/entry_points/
+COPY Docker/entry_points/functions.sh /home/cbrain/cbrain/Docker/entry_points/
 COPY Docker/init_portal/ /home/cbrain/cbrain/Docker/init_portal/
 COPY Docker/templates/ /home/cbrain/cbrain/Docker/templates/
-
 USER root
 RUN chown cbrain:cbrain -R /home/cbrain/cbrain
+RUN chmod 777 -R /home/cbrain/cbrain
 
 #########################
 # Ports and entry point #

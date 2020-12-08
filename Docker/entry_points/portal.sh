@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+set +x
+
 source /home/cbrain/.bashrc
 
 source /home/cbrain/cbrain/Docker/entry_points/functions.sh

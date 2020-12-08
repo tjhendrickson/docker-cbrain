@@ -6,7 +6,6 @@ FROM centos:7.4.1708
 
 # Note: keep the package list alphabetically
 #       ordered to facilitate parsing
-
 RUN yum update -y && \
     yum install -y \
       autoconf \
@@ -31,11 +30,22 @@ RUN yum update -y && \
       readline-devel \
       ruby \
       sqlite-devel \
+      tar \
+      wget \
       zlib-devel \
       wget \
       which && \
     yum clean all && \
     useradd cbrain
+
+RUN cd /tmp && \
+   wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.18.tar.gz -O /tmp/libsodium.tar.gz && \
+   tar -xzvf  /tmp/libsodium.tar.gz -C /tmp && \
+   cd /tmp/libsodium-1.0.18 && \
+   ./configure && \
+   make && \
+   make check && \
+   make install
 
 ##########################
 # Dockerize installation #

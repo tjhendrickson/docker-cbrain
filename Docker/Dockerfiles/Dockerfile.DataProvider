@@ -35,7 +35,7 @@ COPY ./Docker/entry_points/data_provider.sh /home/cbrain/entry_points/
 COPY ./Docker/entry_points/data_provider_bootstrap.sh /home/cbrain/entry_points/
 COPY ./Docker/entry_points/functions.sh /home/cbrain/entry_points/
 RUN chown cbrain:cbrain -R /home/cbrain/entry_points
-
+RUN chmod 777 -R /home/cbrain/entry_points
 #########################
 # Ports and entry point #
 #########################

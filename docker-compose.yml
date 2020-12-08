@@ -1,8 +1,39 @@
 version: '2.1'
 services:
 
+#  wait_db:
+#    image: "dhwebb/wait4mysql:light"
+#    depends_on:
+#      - mysql
+#    environment:
+#      HOST: "mysql"
+#      USER: "cbrain_test"
+#      PASSWORD: "cbrain4567"
+#      TIMOUT: 60
+
+#  cbrain-portal:
+#    image: hbpmip/cbrain_portal
+#    volumes:
+#     - ./volumes/portal/data_cache:/home/cbrain/cbrain_data_cache
+#     - ./volumes/portal/.ssh:/home/cbrain/.ssh
+#     - ./volumes/portal/plugins:/home/cbrain/plugins
+#    ports:
+#     - "${PORT:-3000}:3000"
+#    depends_on:
+#     - mysql
+#    environment:
+#      MODE: "${MODE:-development}"
+#      USERID: ${USERID}
+#      GROUPID: ${GROUPID}
+#      MYSQL_HOST: "mysql"
+#      MYSQL_PORT: "3306"
+#      MYSQL_USER: "cbrain_test"
+#      MYSQL_DATABASE: "cbrain"
+#      MYSQL_PASSWORD: "cbrain4567"
+
   mysql:
     image: mariadb:10.3.2
+    command: --default-authentication-plugin=mysql_native_password
     volumes:
       - ./volumes/mysql-data:/var/lib/mysql
     environment:
@@ -11,72 +42,52 @@ services:
       MYSQL_DATABASE: "cbrain"
       MYSQL_PASSWORD: "cbrain4567"
 
-  wait_db:
-    image: "dhwebb/wait4mysql:light"
-    depends_on:
-      - mysql
+  adminer:
+    image: adminer
+    restart: always
     environment:
-      HOST: "mysql"
-      USER: "cbrain_test"
-      PASSWORD: "cbrain4567"
-      TIMOUT: 60
+      ADMINER_DEFAULT_SERVER: mysql
+      ADMINER_DESIGN: galkaev
+    ports: 
+     - 8080:8080
+  
+#  wait_portal:
+#    image: "waisbrot/wait"
+#    depends_on:
+#      - cbrain-portal
+#    environment:
+#      TARGETS: "cbrain-portal:3000"
+#      TIMOUT: 60
 
-  cbrain-portal:
-    image: nbeck/cbrain_portal
-    volumes:
-     - ./volumes/portal/data_cache:/home/cbrain/cbrain_data_cache
-     - ./volumes/portal/.ssh:/home/cbrain/.ssh
-     - ./volumes/portal/plugins:/home/cbrain/plugins
-    ports:
-     - "${PORT:-3000}:3000"
-    depends_on:
-     - mysql
-    environment:
-      MODE: "${MODE:-development}"
-      USERID: timothy
-      GROUPID: odin
-      MYSQL_HOST: "mysql"
-      MYSQL_PORT: "3306"
-      MYSQL_USER: "cbrain_test"
-      MYSQL_DATABASE: "cbrain"
-      MYSQL_PASSWORD: "cbrain4567"
+#  cbrain-bourreau:
+#    image: hbpmip/cbrain_bourreau
+#    volumes:
+#     - ./volumes/portal/.ssh:/home/cbrain/.portal_ssh
+#     - ./volumes/bourreau/data_cache:/home/cbrain/cbrain_data_cache
+#     - ./volumes/bourreau/plugins:/home/cbrain/plugins
+#     - ./volumes/bourreau/cbrain_task_directories:/home/cbrain/cbrain_task_directories
+#    ports:
+#     - "${BOURREAU_SSH_PORT:-1022}:22"
+#    depends_on:
+#     - cbrain-portal
+#    environment:
+#      USERID: ${USERID}
+#      GROUPID: ${GROUPID}
+#      PORTAL_PORT: "${PORT:-3000}"
+#      PORTAL_HOST: cbrain-portal
 
-  wait_portal:
-    image: "waisbrot/wait"
-    depends_on:
-      - cbrain-portal
-    environment:
-      TARGETS: "cbrain-portal:3000"
-      TIMOUT: 60
+#  data-provider:
+#    image: hbpmip/cbrain_data_provider
+#    volumes:
+#     - ./volumes/portal/.ssh:/home/cbrain/.portal_ssh
+#     - ./volumes/data_provider/data:/home/cbrain/data
+#    ports:
+#     - "${PROVIDER_SSH_PORT:-1122}:22"
+#    depends_on:
+#     - cbrain-portal
+#    environment:
+#      USERID: ${USERID}
+#      GROUPID: ${GROUPID}
+#      PORTAL_PORT: "${PORT:-3000}"
+#      PORTAL_HOST: cbrain-portal
 
-  cbrain-bourreau:
-    image: nbeck/cbrain_bourreau
-    volumes:
-     - ./volumes/portal/.ssh:/home/cbrain/.portal_ssh
-     - ./volumes/bourreau/data_cache:/home/cbrain/cbrain_data_cache
-     - ./volumes/bourreau/plugins:/home/cbrain/plugins
-     - ./volumes/bourreau/cbrain_task_directories:/home/cbrain/cbrain_task_directories
-    ports:
-     - "${BOURREAU_SSH_PORT:-1022}:22"
-    depends_on:
-     - cbrain-portal
-    environment:
-      USERID: timothy
-      GROUPID: odin
-      PORTAL_PORT: "${PORT:-3000}"
-      PORTAL_HOST: cbrain-portal
-
-  data-provider:
-    image: nbeck/cbrain_dataprovider
-    volumes:
-     - ./volumes/portal/.ssh:/home/cbrain/.portal_ssh
-     - ./volumes/data_provider/data:/home/cbrain/data
-    ports:
-     - "${PROVIDER_SSH_PORT:-1122}:22"
-    depends_on:
-     - cbrain-portal
-    environment:
-      USERID: timothy
-      GROUPID: odin
-      PORTAL_PORT: "${PORT:-3000}"
-      PORTAL_HOST: cbrain-portal

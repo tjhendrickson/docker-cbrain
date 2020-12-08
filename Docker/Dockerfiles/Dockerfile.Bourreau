@@ -4,7 +4,7 @@ FROM ${BASE_IMAGE}
 USER root
 
 RUN yum install -y \
-      openssh-server && \
+      openssh-server libsodium libsodium-dev && \
     yum clean all && \
     echo -e "Port 22\n" >> /etc/ssh/sshd_config && \
     echo -e "PasswordAuthentication no\n" >> /etc/ssh/sshd_config && \
@@ -22,11 +22,12 @@ USER cbrain
 
 # Copy Gemfiles
 RUN mkdir -p ${HOME}/cbrain/Bourreau ${HOME}/.ssh && chmod -R 700 ${HOME}/.ssh
-COPY ./cbrain/Bourreau/Gemfile /home/cbrain/cbrain/Bourreau/
+COPY ./cbrain/Bourreau/ /home/cbrain/cbrain/Bourreau/
+
 
 # Bundle bourreau
 RUN source ~/.bashrc && \
-    cd ${HOME}/cbrain/Bourreau                 && \
+    cd /home/cbrain/cbrain/Bourreau                 && \
     bundle install                             && \
     cd `bundle show sys-proctable`             && \
     rake install                               && \
@@ -39,12 +40,13 @@ RUN source ~/.bashrc && \
 COPY ./cbrain/*.txt ./cbrain/*.md ./cbrain/*.sh ./cbrain/*.csv /home/cbrain/cbrain/
 COPY ./cbrain/Bourreau/ /home/cbrain/cbrain/Bourreau/
 COPY ./cbrain/BrainPortal/ /home/cbrain/cbrain/BrainPortal/
-COPY Docker/entry_points/bourreau_bootstrap.sh \
-     Docker/entry_points/bourreau.sh \
-     Docker/entry_points/functions.sh /home/cbrain/cbrain/Docker/entry_points/
+COPY Docker/entry_points/ /home/cbrain/cbrain/Docker/entry_points/
+COPY Docker/entry_points/bourreau.sh /home/cbrain/cbrain/Docker/entry_points/
+COPY Docker/entry_points/functions.sh /home/cbrain/cbrain/Docker/entry_points/
 COPY Docker/templates/ /home/cbrain/cbrain/Docker/templates/
 
 USER root
+RUN chmod 777 -R /home/cbrain/cbrain/Bourreau/
 RUN chown cbrain:cbrain -R /home/cbrain/cbrain
 
 #########################
@@ -78,3 +80,4 @@ VOLUME /home/cbrain/cbrain_data_cache \
        /home/cbrain/.portal_ssh \
        /home/cbrain/plugins \
        /home/cbrain/cbrain_task_directories
+
